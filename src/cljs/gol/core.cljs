@@ -29,18 +29,16 @@
 
 (defn populate [w h state]
   (let [all  (for [x (range w)
-                   y (range h)]
-               (let [p [x y]]
-                 [p (neibs w h p state)]))
-        dead (->> all
-                  (filter (fn [[_ n]] (or (< n 2) (> n 3))))
-                  (map first)
-                  set)
-        born (->> all
-                  (filter (fn [[_ n]] (= n 3)))
-                  (map first)
-                  set
-                  (#(clojure.set/difference % state)))]
+                   y (range h)
+                   :let [p [x y]]]
+               [p (neibs w h p state)])
+        only (fn [pred]
+               (->> all
+                    (filter (comp pred first))
+                    (map first)
+                    set))
+        dead (only #(or (< % 2) (> % 3)))
+        born (only #(= % 3))]
     (-> state
         (clojure.set/difference dead)
         (clojure.set/union born))))
@@ -95,5 +93,3 @@
 
 (defn init! []
   (mount-root))
-
-
