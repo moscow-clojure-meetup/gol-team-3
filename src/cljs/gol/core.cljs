@@ -34,7 +34,7 @@
                [p (neibs w h p state)])
         only (fn [pred]
                (->> all
-                    (filter (comp pred first))
+                    (filter (comp pred second))
                     (map first)
                     set))
         dead (only #(or (< % 2) (> % 3)))
